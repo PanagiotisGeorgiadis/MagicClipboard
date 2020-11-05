@@ -12,6 +12,9 @@
     "default_icon": "icons/16.png",
     "default_popup": "popup/index.html"
   },
+  "background": {
+    "scripts": ["background/index.js"]
+  },
   "permissions": [
     "contextMenus",
     "storage",
