@@ -86,6 +86,10 @@ const ClearCTA = styled(CTA)`
   }
 `
 
+const updateContextMenu = () => {
+  chrome.runtime.sendMessage({ kind: "UpdateContextMenu" })
+}
+
 type MessageType = "Hint" | "Success" | "Error"
 
 const View: React.FunctionComponent = () => {
@@ -138,6 +142,7 @@ const View: React.FunctionComponent = () => {
           onClick={() => {
             setValue("")
             chrome.storage.sync.remove("clipboard")
+            updateContextMenu()
             setMessageType("Hint")
           }}
         >
@@ -151,6 +156,7 @@ const View: React.FunctionComponent = () => {
                 // Trying to parse it here in order to avoid any blowups on the other parts
                 JSON.parse(value)
                 chrome.storage.sync.set({ clipboard: value })
+                updateContextMenu()
                 setMessageType("Success")
               } catch (err) {
                 setMessageType("Error")
