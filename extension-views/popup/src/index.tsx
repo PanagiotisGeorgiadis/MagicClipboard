@@ -92,6 +92,14 @@ const View: React.FunctionComponent = () => {
   const [value, setValue] = React.useState<string>()
   const [messageType, setMessageType] = React.useState<MessageType>("Hint")
 
+  React.useEffect(() => {
+    chrome.storage.sync.get("clipboard", ({ clipboard }) => {
+      if (clipboard && typeof clipboard === "string") {
+        setValue(clipboard)
+      }
+    })
+  }, [])
+
   return (
     <Main>
       <TopSection>
@@ -108,12 +116,15 @@ const View: React.FunctionComponent = () => {
             setValue(evt.target.value)
           }}
         />
+
         {messageType === "Hint" && (
           <Hint>Paste a valid JSON into the textarea above to get started</Hint>
         )}
+
         {messageType === "Success" && (
           <Success>Successfully updated your magic clipboard!</Success>
         )}
+
         {messageType === "Error" && (
           <Error>
             It seems like your JSON is not a valid one. Please try again with a
@@ -126,6 +137,7 @@ const View: React.FunctionComponent = () => {
         <ClearCTA
           onClick={() => {
             setValue("")
+            chrome.storage.sync.remove("clipboard")
             setMessageType("Hint")
           }}
         >
@@ -136,8 +148,9 @@ const View: React.FunctionComponent = () => {
           onClick={() => {
             if (value) {
               try {
-                const json = JSON.parse(value)
-                // TODO: Save that JSON into the extension storage
+                // Trying to parse it here in order to avoid any blowups on the other parts
+                JSON.parse(value)
+                chrome.storage.sync.set({ clipboard: value })
                 setMessageType("Success")
               } catch (err) {
                 setMessageType("Error")
