@@ -90,11 +90,23 @@ const updateContextMenu = () => {
   chrome.runtime.sendMessage({ kind: "UpdateContextMenu" })
 }
 
-type MessageType = "Hint" | "Success" | "Error"
+const hintMsg = "Paste a valid JSON into the textarea above to get started"
+const errorMsg =
+  "It seems like your JSON is not a valid one. Please try again with a valid JSON."
+const saveSuccessMsg = "Successfully updated your magic clipboard!"
+const clearSuccessMsg = "Successfully cleared your magic clipboard!"
+
+interface Message {
+  kind: "Error" | "Hint" | "Success"
+  msg: string
+}
 
 const View: React.FunctionComponent = () => {
   const [value, setValue] = React.useState<string>()
-  const [messageType, setMessageType] = React.useState<MessageType>("Hint")
+  const [message, setMessage] = React.useState<Message>({
+    kind: "Hint",
+    msg: hintMsg,
+  })
 
   React.useEffect(() => {
     chrome.storage.sync.get("clipboard", ({ clipboard }) => {
@@ -120,21 +132,9 @@ const View: React.FunctionComponent = () => {
             setValue(evt.target.value)
           }}
         />
-
-        {messageType === "Hint" && (
-          <Hint>Paste a valid JSON into the textarea above to get started</Hint>
-        )}
-
-        {messageType === "Success" && (
-          <Success>Successfully updated your magic clipboard!</Success>
-        )}
-
-        {messageType === "Error" && (
-          <Error>
-            It seems like your JSON is not a valid one. Please try again with a
-            valid JSON.
-          </Error>
-        )}
+        {message.kind === "Hint" && <Hint>{message.msg}</Hint>}
+        {message.kind === "Success" && <Success>{message.msg}</Success>}
+        {message.kind === "Error" && <Error>{message.msg}</Error>}
       </TextareaContainer>
 
       <CTARow>
@@ -143,7 +143,7 @@ const View: React.FunctionComponent = () => {
             setValue("")
             chrome.storage.sync.remove("clipboard")
             updateContextMenu()
-            setMessageType("Hint")
+            setMessage({ kind: "Success", msg: clearSuccessMsg })
           }}
         >
           Clear
@@ -157,9 +157,9 @@ const View: React.FunctionComponent = () => {
                 JSON.parse(value)
                 chrome.storage.sync.set({ clipboard: value })
                 updateContextMenu()
-                setMessageType("Success")
+                setMessage({ kind: "Success", msg: saveSuccessMsg })
               } catch (err) {
-                setMessageType("Error")
+                setMessage({ kind: "Error", msg: errorMsg })
               }
             }
           }}
