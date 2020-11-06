@@ -18,20 +18,6 @@ export const IconCTA = styled.button`
   }
 `
 
-export const CTA = styled.button`
-  width: auto;
-  height: 42px;
-  padding: 0 8px;
-  border: 0;
-  outline: 0;
-  border-radius: 4px;
-  color: white;
-  font-size: 16px;
-  font-family: "Roboto", sans-serif;
-  text-align: center;
-  cursor: pointer;
-`
-
 export const TopRow = styled.section`
   height: 40px;
   margin-bottom: 16px;

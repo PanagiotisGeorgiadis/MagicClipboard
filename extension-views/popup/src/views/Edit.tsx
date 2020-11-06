@@ -2,10 +2,10 @@ import React from "react"
 
 import styled from "@emotion/styled"
 
-import { CTA, IconCTA, TopRow, TopRowTitle } from "../components/Shared"
+import { IconCTA, TopRow, TopRowTitle } from "../components/Shared"
 
 import magicWandEmoji from "../assets/magic-wand.png"
-import { TrashIcon } from "../components/Icons"
+import { SaveIcon, TrashIcon } from "../components/Icons"
 
 const Main = styled.main`
   width: 480px;
@@ -43,24 +43,12 @@ const Success = styled(Hint)`
 `
 
 const CTARow = styled.section`
-  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-
-  > button {
-    min-width: 160px;
-  }
 `
 
-const SaveCTA = styled(CTA)`
-  margin-left: auto;
-  background-color: #1a73e8;
-
-  &:hover {
-    background-color: #1566d1;
-  }
+const SaveCTA = styled(IconCTA)`
+  margin-left: 16px;
 `
 
 const hintMsg =
@@ -101,16 +89,36 @@ const View: React.FunctionComponent<Props> = ({
           Magic Clipboard <Emoji src={magicWandEmoji} />
         </TopRowTitle>
 
-        <IconCTA
-          title="Clear clipboard"
-          onClick={() => {
-            onClear()
-            setValue("")
-            setMessage({ kind: "Success", msg: clearSuccessMsg })
-          }}
-        >
-          <TrashIcon width={20} height={20} color="#E62E00" />
-        </IconCTA>
+        <CTARow>
+          <IconCTA
+            title="Clear clipboard"
+            onClick={() => {
+              onClear()
+              setValue("")
+              setMessage({ kind: "Success", msg: clearSuccessMsg })
+            }}
+          >
+            <TrashIcon width={20} height={20} color="#E62E00" />
+          </IconCTA>
+
+          <SaveCTA
+            title="Save clipboard"
+            onClick={() => {
+              if (value) {
+                try {
+                  // Trying to parse it here in order to verify its validity
+                  const json = JSON.parse(value)
+                  onSave(json)
+                  setMessage({ kind: "Success", msg: saveSuccessMsg })
+                } catch (err) {
+                  setMessage({ kind: "Error", msg: errorMsg })
+                }
+              }
+            }}
+          >
+            <SaveIcon width={20} height={20} color="#0066CC" />
+          </SaveCTA>
+        </CTARow>
       </TopRow>
 
       <TextareaContainer>
@@ -125,25 +133,6 @@ const View: React.FunctionComponent<Props> = ({
         {message.kind === "Success" && <Success>{message.msg}</Success>}
         {message.kind === "Error" && <Error>{message.msg}</Error>}
       </TextareaContainer>
-
-      <CTARow>
-        <SaveCTA
-          onClick={() => {
-            if (value) {
-              try {
-                // Trying to parse it here in order to verify its validity
-                const json = JSON.parse(value)
-                onSave(json)
-                setMessage({ kind: "Success", msg: saveSuccessMsg })
-              } catch (err) {
-                setMessage({ kind: "Error", msg: errorMsg })
-              }
-            }
-          }}
-        >
-          Save
-        </SaveCTA>
-      </CTARow>
     </Main>
   )
 }
