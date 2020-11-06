@@ -41,7 +41,7 @@ const View: React.FunctionComponent<Props> = ({
 }) => (
   <Main>
     <TopRow>
-      <TopRowTitle>Clipboard Details</TopRowTitle>
+      <TopRowTitle>Saved clipboard details</TopRowTitle>
 
       <IconCTA onClick={goBack} title="Edit your clipboard">
         <PenIcon width={18} height={18} color="gray" />

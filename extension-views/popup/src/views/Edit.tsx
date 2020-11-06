@@ -2,9 +2,10 @@ import React from "react"
 
 import styled from "@emotion/styled"
 
-import { CTA, TopRow, TopRowTitle } from "../components/Shared"
+import { CTA, IconCTA, TopRow, TopRowTitle } from "../components/Shared"
 
 import magicWandEmoji from "../assets/magic-wand.png"
+import { TrashIcon } from "../components/Icons"
 
 const Main = styled.main`
   width: 480px;
@@ -54,18 +55,11 @@ const CTARow = styled.section`
 `
 
 const SaveCTA = styled(CTA)`
+  margin-left: auto;
   background-color: #1a73e8;
 
   &:hover {
     background-color: #1566d1;
-  }
-`
-
-const ClearCTA = styled(CTA)`
-  background-color: #999999;
-
-  &:hover {
-    background-color: #808080;
   }
 `
 
@@ -104,8 +98,19 @@ const View: React.FunctionComponent<Props> = ({
     <Main>
       <TopRow>
         <TopRowTitle>
-          Your Magic Clipboard <Emoji src={magicWandEmoji} />
+          Magic Clipboard <Emoji src={magicWandEmoji} />
         </TopRowTitle>
+
+        <IconCTA
+          title="Clear clipboard"
+          onClick={() => {
+            onClear()
+            setValue("")
+            setMessage({ kind: "Success", msg: clearSuccessMsg })
+          }}
+        >
+          <TrashIcon width={20} height={20} color="#E62E00" />
+        </IconCTA>
       </TopRow>
 
       <TextareaContainer>
@@ -122,16 +127,6 @@ const View: React.FunctionComponent<Props> = ({
       </TextareaContainer>
 
       <CTARow>
-        <ClearCTA
-          onClick={() => {
-            onClear()
-            setValue("")
-            setMessage({ kind: "Success", msg: clearSuccessMsg })
-          }}
-        >
-          Clear
-        </ClearCTA>
-
         <SaveCTA
           onClick={() => {
             if (value) {
