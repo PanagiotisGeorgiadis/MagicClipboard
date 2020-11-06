@@ -15,6 +15,7 @@ const updateContextMenu = () => {
 interface Details {
   kind: "Details"
   clipboard: JSON
+  didJustSave?: boolean
 }
 
 interface Edit {
@@ -42,6 +43,7 @@ const View: React.FunctionComponent = () => {
       return (
         <DetailsView
           clipboard={view.clipboard}
+          didJustSave={view.didJustSave}
           goBack={() => {
             setView({ kind: "Edit", clipboard: view.clipboard })
           }}
@@ -59,7 +61,7 @@ const View: React.FunctionComponent = () => {
           onSave={json => {
             chrome.storage.sync.set({ clipboard: JSON.stringify(json) })
             updateContextMenu()
-            setView({ kind: "Details", clipboard: json })
+            setView({ kind: "Details", clipboard: json, didJustSave: true })
           }}
         />
       )

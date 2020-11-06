@@ -1,11 +1,20 @@
 import React from "react"
 
 import styled from "@emotion/styled"
-import { IconCTA, TopRow, TopRowTitle } from "../components/Shared"
+
 import { PenIcon } from "../components/Icons"
+import {
+  IconCTA,
+  TopRow as DefaultTopRow,
+  TopRowTitle,
+} from "../components/Shared"
 
 const Main = styled.main`
   width: 480px;
+`
+
+const TopRow = styled(DefaultTopRow)`
+  margin-bottom: 0;
 `
 
 const Content = styled.div`
@@ -13,17 +22,23 @@ const Content = styled.div`
   overflow: auto;
 `
 
-const Pre = styled.pre`
+const Pre = styled.pre<{ didJustSave: boolean }>`
+  ${props => (props.didJustSave ? "color: #009933" : "")};
   font-size: 14px;
   font-family: "Roboto", sans-serif;
 `
 
 interface Props {
   clipboard: JSON
+  didJustSave?: boolean
   goBack: () => void
 }
 
-const View: React.FunctionComponent<Props> = ({ clipboard, goBack }) => (
+const View: React.FunctionComponent<Props> = ({
+  clipboard,
+  didJustSave = false,
+  goBack,
+}) => (
   <Main>
     <TopRow>
       <TopRowTitle>Clipboard Details</TopRowTitle>
@@ -34,7 +49,7 @@ const View: React.FunctionComponent<Props> = ({ clipboard, goBack }) => (
     </TopRow>
 
     <Content>
-      <Pre>{JSON.stringify(clipboard, null, 2)}</Pre>
+      <Pre didJustSave={didJustSave}>{JSON.stringify(clipboard, null, 2)}</Pre>
     </Content>
   </Main>
 )
