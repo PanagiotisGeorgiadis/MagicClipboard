@@ -52,7 +52,7 @@ const SearchInput = styled.input`
   box-sizing: border-box;
 `
 
-const SearchButton = styled.button`
+const SearchIconContainer = styled.div`
   width: 24px;
   height: 24px;
   padding: 0;
@@ -63,7 +63,6 @@ const SearchButton = styled.button`
   outline: 0;
   background-color: white;
   box-sizing: border-box;
-  cursor: pointer;
 `
 
 const flattenObject = (
@@ -82,19 +81,20 @@ const flattenObject = (
   return res
 }
 
+const ObjectRendererContainer = styled.div<{ color: string }>`
+  margin-left: 0;
+  font-size: 14px;
+  font-family: "Roboto", sans-serif;
+  ${props => `color: ${props.color}`};
+`
+
 const JSONRow = styled.div`
   width: fit-content;
   margin-left: 8px;
-  font-size: 14px;
-  font-family: "Roboto", sans-serif;
 
   &.highlight {
     background-color: #ffcc00;
   }
-`
-
-const TopJSONRow = styled(JSONRow)`
-  margin-left: 0;
 `
 
 interface ObjectRendererProps {
@@ -235,25 +235,21 @@ const View: React.FunctionComponent<Props> = ({
             type="text"
             value={searchVal}
             onChange={evt => setSearchVal(evt.target.value)}
-            onKeyDown={evt => {
-              if (evt.key === "Enter") {
-                // TODO: Search
-              }
-            }}
             placeholder="Search here"
           />
-          <SearchButton>
+
+          <SearchIconContainer>
             <SearchIcon width={18} height={18} color="gray" />
-          </SearchButton>
+          </SearchIconContainer>
         </RightSide>
       </TopRow>
 
       <Content>
-        <TopJSONRow>
+        <ObjectRendererContainer color={didJustSave ? "#009933" : "#333333"}>
           {openTag}
           <ObjectRenderer obj={clipboard} searchVal={searchVal} />
           {closeTag}
-        </TopJSONRow>
+        </ObjectRendererContainer>
       </Content>
     </Main>
   )
