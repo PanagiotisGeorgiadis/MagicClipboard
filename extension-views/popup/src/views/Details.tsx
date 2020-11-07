@@ -43,12 +43,6 @@ const Content = styled.div`
   overflow: auto;
 `
 
-const Pre = styled.pre<{ didJustSave: boolean }>`
-  ${props => (props.didJustSave ? "color: #009933" : "")};
-  font-size: 14px;
-  font-family: "Roboto", sans-serif;
-`
-
 const SearchInput = styled.input`
   height: 24px;
   font-size: 14px;
@@ -88,6 +82,117 @@ const flattenObject = (
   return res
 }
 
+const JSONRow = styled.div`
+  width: fit-content;
+  margin-left: 8px;
+  font-size: 14px;
+  font-family: "Roboto", sans-serif;
+
+  &.highlight {
+    background-color: #ffcc00;
+  }
+`
+
+const TopJSONRow = styled(JSONRow)`
+  margin-left: 0;
+`
+
+interface ObjectRendererProps {
+  obj: object
+  searchVal: string
+  hideKey?: boolean
+}
+
+const ObjectRenderer: React.FunctionComponent<ObjectRendererProps> = ({
+  obj,
+  searchVal = "",
+  hideKey = false,
+}) => (
+  <>
+    {Object.keys(obj).map(key => {
+      const val = obj[key]
+      const className =
+        searchVal.length > 2 &&
+        key.toLowerCase().includes(searchVal.toLowerCase())
+          ? "highlight"
+          : ""
+
+      return (
+        <JSONRow className={className}>
+          {(() => {
+            switch (typeof val) {
+              case "string":
+              case "number":
+              case "boolean":
+                return (
+                  <>
+                    <strong>{key}:</strong>&nbsp;"{val.toString()}",
+                  </>
+                )
+
+              case "object":
+                if (Array.isArray(val)) {
+                  return (
+                    <>
+                      <div>{!hideKey && <strong>{key}:&nbsp;</strong>}[</div>
+
+                      {val.map(item => {
+                        switch (typeof item) {
+                          case "string":
+                          case "number":
+                          case "boolean":
+                            return <JSONRow>{item},</JSONRow>
+
+                          case "object":
+                            if (Array.isArray(item)) {
+                              return (
+                                <ObjectRenderer
+                                  obj={[item]}
+                                  searchVal={searchVal}
+                                  hideKey={true}
+                                />
+                              )
+                            } else {
+                              return (
+                                <ObjectRenderer
+                                  obj={{ item }}
+                                  searchVal={searchVal}
+                                  hideKey={true}
+                                />
+                              )
+                            }
+
+                          default:
+                            return null
+                        }
+                      })}
+
+                      <div>{`],`}</div>
+                    </>
+                  )
+                } else {
+                  return (
+                    <>
+                      <div>
+                        {!hideKey && <strong>{key}:&nbsp;</strong>}
+                        {"{"}
+                      </div>
+                      <ObjectRenderer obj={val} searchVal={searchVal} />
+                      <div>{"},"}</div>
+                    </>
+                  )
+                }
+
+              default:
+                return null
+            }
+          })()}
+        </JSONRow>
+      )
+    })}
+  </>
+)
+
 interface Props {
   clipboard: JSON
   didJustSave?: boolean
@@ -100,6 +205,19 @@ const View: React.FunctionComponent<Props> = ({
   goBack,
 }) => {
   const [searchVal, setSearchVal] = React.useState<string>()
+
+  const [openTag, closeTag] = (() => {
+    switch (typeof clipboard) {
+      case "object":
+        if (Array.isArray(clipboard)) {
+          return ["[", "]"]
+        } else {
+          return ["{", "}"]
+        }
+      default:
+        return ""
+    }
+  })()
 
   return (
     <Main>
@@ -131,9 +249,11 @@ const View: React.FunctionComponent<Props> = ({
       </TopRow>
 
       <Content>
-        <Pre id="content" didJustSave={didJustSave}>
-          {JSON.stringify(clipboard, null, 2)}
-        </Pre>
+        <TopJSONRow>
+          {openTag}
+          <ObjectRenderer obj={clipboard} searchVal={searchVal} />
+          {closeTag}
+        </TopJSONRow>
       </Content>
     </Main>
   )
