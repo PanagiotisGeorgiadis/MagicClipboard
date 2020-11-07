@@ -27,11 +27,14 @@ const LeftSide = styled.div`
 `
 
 const RightSide = styled.div`
+  padding: 0 8px;
   display: flex;
   align-items: center;
+  border: 1px solid lightgray;
+  border-radius: 16px;
 
   &:focus-within {
-    outline: 1px solid black;
+    box-shadow: 0px 0px 0px 2px rgba(0, 102, 204, 1);
   }
 `
 
@@ -51,8 +54,7 @@ const SearchInput = styled.input`
   font-size: 14px;
   border-right: 0;
   outline: 0;
-  border: 1px solid lightgray;
-  border-right: 0;
+  border: 0;
   box-sizing: border-box;
 `
 
@@ -63,8 +65,7 @@ const SearchButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid lightgray;
-  border-left: 0;
+  border: 0;
   outline: 0;
   background-color: white;
   box-sizing: border-box;
@@ -121,6 +122,7 @@ const View: React.FunctionComponent<Props> = ({
                 // TODO: Search
               }
             }}
+            placeholder="Search here"
           />
           <SearchButton>
             <SearchIcon width={18} height={18} color="gray" />
