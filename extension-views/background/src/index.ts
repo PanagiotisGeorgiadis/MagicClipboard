@@ -5,15 +5,9 @@ const rootContextMenuId = "Magic Clipboard"
 // Used to separate Id's
 const separator = "~"
 
-const generateContextMenus = (
-  rootId: string,
-  obj: Record<string, any>,
-  idSuffix: string = ""
-) => {
+const generateContextMenus = (rootId: string, obj: Record<string, any>) => {
   Object.keys(obj).map(key => {
-    const newKey = idSuffix
-      ? `${rootId}${separator}${idSuffix}${separator}${key}`
-      : `${rootId}${separator}${key}`
+    const newKey = `${rootId}${separator}${key}`
 
     switch (typeof obj[key]) {
       case "bigint":
@@ -22,7 +16,7 @@ const generateContextMenus = (
         // Normal key
         chrome.contextMenus.create({
           id: newKey,
-          title: idSuffix ? `${key} - ${idSuffix}` : key,
+          title: key,
           contexts: ["editable"],
           parentId: rootId,
         })
@@ -47,41 +41,7 @@ const generateContextMenus = (
           parentId: rootId,
         })
 
-        // Recursive Call
-        if (Array.isArray(obj[key])) {
-          // Its an array so you need some special sauce here
-          obj[key].map((item, index) => {
-            switch (typeof item) {
-              case "bigint":
-              case "number":
-              case "string":
-              case "boolean":
-                chrome.contextMenus.update(newKey, {
-                  title: `${key} - flattened`,
-                })
-                break
-
-              case "object":
-                // Add separators
-                if (index > 0) {
-                  chrome.contextMenus.create({
-                    id: `${newKey}-separator-${index + 1}`,
-                    contexts: ["editable"],
-                    parentId: newKey,
-                    type: "separator",
-                  })
-                }
-                generateContextMenus(newKey, item, (index + 1).toString())
-                break
-
-              default:
-              // Do nothing for now
-            }
-          })
-        } else {
-          // Its an object so think accordingly
-          generateContextMenus(newKey, obj[key])
-        }
+        generateContextMenus(newKey, obj[key])
         break
       }
 
