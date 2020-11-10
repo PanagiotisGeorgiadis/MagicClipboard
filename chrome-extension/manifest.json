@@ -24,6 +24,7 @@
   "permissions": [
     "contextMenus",
     "storage",
-    "activeTab"
+    "activeTab",
+    "unlimitedStorage"
   ]
 }

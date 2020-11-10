@@ -29,9 +29,14 @@ const View: React.FunctionComponent = () => {
   const [view, setView] = React.useState<ViewType>({ kind: "Edit" })
 
   React.useEffect(() => {
-    chrome.storage.sync.get("clipboard", ({ clipboard }) => {
+    chrome.storage.local.get("clipboard", ({ clipboard }) => {
       if (clipboard && typeof clipboard === "string") {
-        setView({ kind: "Details", clipboard: JSON.parse(clipboard) })
+        try {
+          const data = JSON.parse(clipboard)
+          setView({ kind: "Details", clipboard: data })
+        } catch (err) {
+          // TODO: Show error message here and possibly clear the storage
+        }
       } else {
         setView({ kind: "Edit" })
       }
@@ -55,11 +60,11 @@ const View: React.FunctionComponent = () => {
         <EditView
           clipboard={view.clipboard}
           onClear={() => {
-            chrome.storage.sync.remove("clipboard")
+            chrome.storage.local.remove("clipboard")
             updateContextMenu()
           }}
           onSave={json => {
-            chrome.storage.sync.set({ clipboard: JSON.stringify(json) })
+            chrome.storage.local.set({ clipboard: JSON.stringify(json) })
             updateContextMenu()
             setView({ kind: "Details", clipboard: json, didJustSave: true })
           }}

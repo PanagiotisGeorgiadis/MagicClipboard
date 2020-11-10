@@ -60,7 +60,7 @@ const init = () => {
     contexts: ["editable"],
   })
 
-  chrome.storage.sync.get("clipboard", ({ clipboard }) => {
+  chrome.storage.local.get("clipboard", ({ clipboard }) => {
     if (clipboard) {
       try {
         const obj = JSON.parse(clipboard)
@@ -89,7 +89,7 @@ chrome.contextMenus.onClicked.addListener(itemData => {
   chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
     const tab = tabs[0]
 
-    chrome.storage.sync.get("clipboard", ({ clipboard }) => {
+    chrome.storage.local.get("clipboard", ({ clipboard }) => {
       if (tab && tab.id && clipboard) {
         try {
           let value = JSON.parse(clipboard)
