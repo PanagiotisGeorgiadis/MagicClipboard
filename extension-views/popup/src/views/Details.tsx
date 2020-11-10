@@ -112,6 +112,41 @@ const JSONRow = styled.div`
   }
 `
 
+interface ItemRendererProps {
+  item: any
+  searchVal: string
+}
+
+const ItemRenderer: React.FunctionComponent<ItemRendererProps> = ({
+  item,
+  searchVal,
+}) => {
+  switch (typeof item) {
+    case "string":
+    case "number":
+    case "boolean":
+      return <JSONRow>{item},</JSONRow>
+
+    case "object":
+      if (item === null) {
+        return null
+      }
+
+      if (Array.isArray(item)) {
+        return (
+          <ObjectRenderer obj={[item]} searchVal={searchVal} hideKey={true} />
+        )
+      } else {
+        return (
+          <ObjectRenderer obj={{ item }} searchVal={searchVal} hideKey={true} />
+        )
+      }
+
+    default:
+      return null
+  }
+}
+
 interface ObjectRendererProps {
   obj: Record<string, any> | Array<any>
   searchVal: string
@@ -132,89 +167,56 @@ const ObjectRenderer: React.FunctionComponent<ObjectRendererProps> = ({
           ? "highlight"
           : ""
 
-      return (
-        <JSONRow className={className}>
-          {(() => {
-            switch (typeof val) {
-              case "string":
-              case "number":
-              case "boolean":
-                return (
-                  <>
-                    <strong>{key}:</strong>&nbsp;"{val.toString()}",
-                  </>
-                )
+      switch (typeof val) {
+        case "string":
+        case "number":
+        case "boolean":
+          return (
+            <JSONRow className={className}>
+              <strong>{key}:</strong>&nbsp;"{val.toString()}",
+            </JSONRow>
+          )
 
-              case "object":
-                if (val === null) {
-                  return (
-                    <>
-                      <strong>{key}:</strong>&nbsp;null,
-                    </>
-                  )
-                }
+        case "object":
+          if (val === null) {
+            return (
+              <JSONRow className={className}>
+                <strong>{key}:</strong>&nbsp;null,
+              </JSONRow>
+            )
+          }
 
-                if (Array.isArray(val)) {
-                  return (
-                    <>
-                      <div>
-                        {!hideKey && <strong>{key}:&nbsp;</strong>}
-                        {"["}
-                      </div>
+          if (Array.isArray(val)) {
+            return (
+              <JSONRow className={className}>
+                <div>
+                  {!hideKey && <strong>{key}:&nbsp;</strong>}
+                  {"["}
+                </div>
 
-                      {val.map(item => {
-                        switch (typeof item) {
-                          case "string":
-                          case "number":
-                          case "boolean":
-                            return <JSONRow>{item},</JSONRow>
+                {val.map(item => (
+                  <ItemRenderer item={item} searchVal={searchVal} />
+                ))}
 
-                          case "object":
-                            if (Array.isArray(item)) {
-                              return (
-                                <ObjectRenderer
-                                  obj={[item]}
-                                  searchVal={searchVal}
-                                  hideKey={true}
-                                />
-                              )
-                            } else {
-                              return (
-                                <ObjectRenderer
-                                  obj={{ item }}
-                                  searchVal={searchVal}
-                                  hideKey={true}
-                                />
-                              )
-                            }
+                <div>{`],`}</div>
+              </JSONRow>
+            )
+          }
 
-                          default:
-                            return null
-                        }
-                      })}
+          return (
+            <JSONRow className={className}>
+              <div>
+                {!hideKey && <strong>{key}:&nbsp;</strong>}
+                {"{"}
+              </div>
+              <ObjectRenderer obj={val} searchVal={searchVal} />
+              <div>{"},"}</div>
+            </JSONRow>
+          )
 
-                      <div>{`],`}</div>
-                    </>
-                  )
-                } else {
-                  return (
-                    <>
-                      <div>
-                        {!hideKey && <strong>{key}:&nbsp;</strong>}
-                        {"{"}
-                      </div>
-                      <ObjectRenderer obj={val} searchVal={searchVal} />
-                      <div>{"},"}</div>
-                    </>
-                  )
-                }
-
-              default:
-                return null
-            }
-          })()}
-        </JSONRow>
-      )
+        default:
+          return null
+      }
     })}
   </>
 )
