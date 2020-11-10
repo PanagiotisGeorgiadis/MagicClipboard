@@ -65,6 +65,21 @@ const SearchIconContainer = styled.div`
   box-sizing: border-box;
 `
 
+const getOpenAndClosingTags = (
+  clipboard: Record<string, any> | Array<any>
+): [React.ReactNode, React.ReactNode] => {
+  switch (typeof clipboard) {
+    case "object":
+      if (Array.isArray(clipboard)) {
+        return ["[", "]"]
+      } else {
+        return ["{", "}"]
+      }
+    default:
+      return [null, null]
+  }
+}
+
 const flattenObject = (
   obj: Record<string, any>,
   parent: string = "",
@@ -98,14 +113,14 @@ const JSONRow = styled.div`
 `
 
 interface ObjectRendererProps {
-  obj: object
+  obj: Record<string, any> | Array<any>
   searchVal: string
   hideKey?: boolean
 }
 
 const ObjectRenderer: React.FunctionComponent<ObjectRendererProps> = ({
-  obj,
-  searchVal = "",
+  obj = {},
+  searchVal,
   hideKey = false,
 }) => (
   <>
@@ -131,10 +146,21 @@ const ObjectRenderer: React.FunctionComponent<ObjectRendererProps> = ({
                 )
 
               case "object":
+                if (val === null) {
+                  return (
+                    <>
+                      <strong>{key}:</strong>&nbsp;null,
+                    </>
+                  )
+                }
+
                 if (Array.isArray(val)) {
                   return (
                     <>
-                      <div>{!hideKey && <strong>{key}:&nbsp;</strong>}[</div>
+                      <div>
+                        {!hideKey && <strong>{key}:&nbsp;</strong>}
+                        {"["}
+                      </div>
 
                       {val.map(item => {
                         switch (typeof item) {
@@ -204,20 +230,9 @@ const View: React.FunctionComponent<Props> = ({
   didJustSave = false,
   goBack,
 }) => {
-  const [searchVal, setSearchVal] = React.useState<string>()
+  const [searchVal, setSearchVal] = React.useState<string>("")
 
-  const [openTag, closeTag] = (() => {
-    switch (typeof clipboard) {
-      case "object":
-        if (Array.isArray(clipboard)) {
-          return ["[", "]"]
-        } else {
-          return ["{", "}"]
-        }
-      default:
-        return ""
-    }
-  })()
+  const [openTag, closeTag] = getOpenAndClosingTags(clipboard)
 
   return (
     <Main>
