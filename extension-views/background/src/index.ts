@@ -8,8 +8,9 @@ const separator = "~"
 const generateContextMenus = (rootId: string, obj: Record<string, any>) => {
   Object.keys(obj).map(key => {
     const newKey = `${rootId}${separator}${key}`
+    const val = obj[key]
 
-    switch (typeof obj[key]) {
+    switch (typeof val) {
       case "bigint":
       case "number":
       case "string":
@@ -26,7 +27,7 @@ const generateContextMenus = (rootId: string, obj: Record<string, any>) => {
         // Checkbox Key
         chrome.contextMenus.create({
           id: newKey,
-          title: `${key} - ${obj[key]}`,
+          title: `${key} - ${val}`,
           contexts: ["editable"],
           parentId: rootId,
         })
@@ -41,7 +42,9 @@ const generateContextMenus = (rootId: string, obj: Record<string, any>) => {
           parentId: rootId,
         })
 
-        generateContextMenus(newKey, obj[key])
+        if (val !== null) {
+          generateContextMenus(newKey, val)
+        }
         break
       }
 
