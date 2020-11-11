@@ -65,37 +65,6 @@ const SearchIconContainer = styled.div`
   box-sizing: border-box;
 `
 
-const getOpenAndClosingTags = (
-  clipboard: Record<string, any> | Array<any>
-): [React.ReactNode, React.ReactNode] => {
-  switch (typeof clipboard) {
-    case "object":
-      if (Array.isArray(clipboard)) {
-        return ["[", "]"]
-      } else {
-        return ["{", "}"]
-      }
-    default:
-      return [null, null]
-  }
-}
-
-const flattenObject = (
-  obj: Record<string, any>,
-  parent: string = "",
-  res: Record<string, any> = {}
-) => {
-  for (let key in obj) {
-    let propName = parent ? `${parent}_${key}` : key
-    if (typeof obj[key] === "object") {
-      flattenObject(obj[key], propName, res)
-    } else {
-      res[propName] = obj[key]
-    }
-  }
-  return res
-}
-
 const ObjectRendererContainer = styled.div<{ color: string }>`
   margin-left: 0;
   font-size: 14px;
@@ -112,51 +81,63 @@ const JSONRow = styled.div`
   }
 `
 
-interface ItemRendererProps {
-  item: any
+interface ArrayRendererProps {
+  array: Record<string, any>
   searchVal: string
 }
 
-const ItemRenderer: React.FunctionComponent<ItemRendererProps> = ({
-  item,
+const ArrayRenderer: React.FunctionComponent<ArrayRendererProps> = ({
+  array,
   searchVal,
-}) => {
-  switch (typeof item) {
-    case "string":
-    case "number":
-    case "boolean":
-      return <JSONRow>{item},</JSONRow>
+}) => (
+  <>
+    {array.map((item: any) => {
+      switch (typeof item) {
+        case "string":
+          return <JSONRow>"{item}",</JSONRow>
 
-    case "object":
-      if (item === null) {
-        return null
+        case "number":
+        case "boolean":
+          return <JSONRow>{item},</JSONRow>
+
+        case "object":
+          if (item === null) {
+            return <JSONRow>null,</JSONRow>
+          }
+
+          if (Array.isArray(item)) {
+            return (
+              <JSONRow>
+                <div>{"["}</div>
+                <ArrayRenderer array={item} searchVal={searchVal} />
+                <div>{"],"}</div>
+              </JSONRow>
+            )
+          }
+
+          return (
+            <JSONRow>
+              <div>{"{"}</div>
+              <ObjectRenderer obj={item} searchVal={searchVal} />
+              <div>{"},"}</div>
+            </JSONRow>
+          )
+
+        default:
+          return null
       }
-
-      if (Array.isArray(item)) {
-        return (
-          <ObjectRenderer obj={[item]} searchVal={searchVal} hideKey={true} />
-        )
-      } else {
-        return (
-          <ObjectRenderer obj={{ item }} searchVal={searchVal} hideKey={true} />
-        )
-      }
-
-    default:
-      return null
-  }
-}
+    })}
+  </>
+)
 
 interface ObjectRendererProps {
-  obj: Record<string, any> | Array<any>
+  obj: Record<string, any>
   searchVal: string
-  hideKey?: boolean
 }
 
 const ObjectRenderer: React.FunctionComponent<ObjectRendererProps> = ({
-  obj = {},
+  obj,
   searchVal,
-  hideKey = false,
 }) => (
   <>
     {Object.keys(obj).map(key => {
@@ -169,11 +150,17 @@ const ObjectRenderer: React.FunctionComponent<ObjectRendererProps> = ({
 
       switch (typeof val) {
         case "string":
+          return (
+            <JSONRow className={className}>
+              <strong>{key}:</strong>&nbsp;"{val.toString()}",
+            </JSONRow>
+          )
+
         case "number":
         case "boolean":
           return (
             <JSONRow className={className}>
-              <strong>{key}:</strong>&nbsp;"{val.toString()}",
+              <strong>{key}:</strong>&nbsp;{val.toString()},
             </JSONRow>
           )
 
@@ -190,14 +177,10 @@ const ObjectRenderer: React.FunctionComponent<ObjectRendererProps> = ({
             return (
               <JSONRow className={className}>
                 <div>
-                  {!hideKey && <strong>{key}:&nbsp;</strong>}
+                  {<strong>{key}:&nbsp;</strong>}
                   {"["}
                 </div>
-
-                {val.map(item => (
-                  <ItemRenderer item={item} searchVal={searchVal} />
-                ))}
-
+                <ArrayRenderer array={val} searchVal={searchVal} />
                 <div>{`],`}</div>
               </JSONRow>
             )
@@ -206,7 +189,7 @@ const ObjectRenderer: React.FunctionComponent<ObjectRendererProps> = ({
           return (
             <JSONRow className={className}>
               <div>
-                {!hideKey && <strong>{key}:&nbsp;</strong>}
+                {<strong>{key}:&nbsp;</strong>}
                 {"{"}
               </div>
               <ObjectRenderer obj={val} searchVal={searchVal} />
@@ -233,8 +216,6 @@ const View: React.FunctionComponent<Props> = ({
   goBack,
 }) => {
   const [searchVal, setSearchVal] = React.useState<string>("")
-
-  const [openTag, closeTag] = getOpenAndClosingTags(clipboard)
 
   return (
     <Main>
@@ -263,9 +244,20 @@ const View: React.FunctionComponent<Props> = ({
 
       <Content>
         <ObjectRendererContainer color={didJustSave ? "#009933" : "#333333"}>
-          {openTag}
-          <ObjectRenderer obj={clipboard} searchVal={searchVal} />
-          {closeTag}
+          {typeof clipboard === "object" && Array.isArray(clipboard) && (
+            <>
+              {"["}
+              <ArrayRenderer array={clipboard} searchVal={searchVal} />
+              {"]"}
+            </>
+          )}
+          {typeof clipboard === "object" && clipboard !== null && (
+            <>
+              {"{"}
+              <ObjectRenderer obj={clipboard} searchVal={searchVal} />
+              {"}"}
+            </>
+          )}
         </ObjectRendererContainer>
       </Content>
     </Main>
