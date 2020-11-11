@@ -82,6 +82,15 @@ const View: React.FunctionComponent<Props> = ({
     msg: hintMsg,
   })
 
+  const formattedValue = (() => {
+    try {
+      const obj = JSON.parse(value)
+      return JSON.stringify(obj, null, 2)
+    } catch (err) {
+      return value
+    }
+  })()
+
   return (
     <Main>
       <TopRow>
@@ -124,7 +133,7 @@ const View: React.FunctionComponent<Props> = ({
       <TextareaContainer>
         <Textarea
           rows={10}
-          value={value}
+          value={formattedValue}
           onChange={evt => {
             setValue(evt.target.value)
           }}
