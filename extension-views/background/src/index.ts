@@ -2,6 +2,22 @@
 
 const rootContextMenuId = "Magic Clipboard"
 
+const flattenObject = (
+  obj: Record<string, any>,
+  parent: string = "",
+  res: Record<string, any> = {}
+) => {
+  for (let key in obj) {
+    let propName = parent ? `${parent}${separator}${key}` : key
+    if (typeof obj[key] === "object") {
+      flattenObject(obj[key], propName, res)
+    } else {
+      res[propName] = obj[key]
+    }
+  }
+  return res
+}
+
 // Used to separate Id's
 const separator = "~"
 
@@ -86,32 +102,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 })
 
 chrome.contextMenus.onClicked.addListener(itemData => {
-  console.log("WOOHOOOOOOOOO")
-  console.log(itemData)
-
   chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
     const tab = tabs[0]
 
     chrome.storage.local.get("clipboard", ({ clipboard }) => {
       if (tab && tab.id && clipboard) {
         try {
-          let value = JSON.parse(clipboard)
-          const menuItemKeys = itemData.menuItemId.split(separator)
-
-          for (let i = 1; i < menuItemKeys.length; i++) {
-            const newValue = value[menuItemKeys[i]]
-
-            if (Array.isArray(newValue)) {
-              const index = parseInt(menuItemKeys[i + 1]) - 1
-              value = newValue[index]
-              i++
-            } else {
-              value = newValue
-            }
-
-            // console.log(value)
-            // console.log(typeof value)
-          }
+          const obj = JSON.parse(clipboard)
+          // We've got this Magic Clipboard prefix on the menuItemId as well
+          const value = flattenObject({ "Magic Clipboard": obj })[
+            itemData.menuItemId
+          ]
 
           chrome.tabs.sendMessage(tab.id, {
             kind: "InsertValue",
