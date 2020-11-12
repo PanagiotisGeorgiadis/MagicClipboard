@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Answer the quiz example</title>
+
+  <style>
+    .row {
+      display: flex;
+    }
+
+    .column {
+      width: 320px;
+      margin-right: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    fieldset {
+      min-height: 140px;
+      margin-bottom: 8px;
+      box-sizing: border-box;
+    }
+
+    legend {
+      font-weight: bold;
+    }
+
+    .question {
+      height: 100%;
+      padding: 8px 0;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+
+    .question > input,
+    .question > label {
+      width: 240px;
+      max-width: 240px;
+    }
+
+    .question > label {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <h2>Welcome to the Quiz!</h2>
+
+  <div class="row">
+    <div class="column">
+      <fieldset>
+        <legend>Question 1</legend>
+        <div class="question">
+          <label for="question-1">Humans and chimpanzees share roughly how much DNA?</label>
+          <input id="question-1" type="text" name="question-1" placeholder="Answer here" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Question 2</legend>
+        <div class="question">
+          <label for="question-2">What is the most abundant gas in the Earth’s atmosphere?</label>
+          <input id="question-2" type="text" name="question-2" placeholder="Answer here" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Question 3</legend>
+        <div class="question">
+          <label for="question-3">Roughly how long does it take for the sun’s light to reach Earth – 8 minutes, 8 hours or 8 days?</label>
+          <input id="question-3" type="text" name="question-3" placeholder="Answer here" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Question 4</legend>
+        <div class="question">
+          <label for="question-4">Which famous British physicist wrote A Brief History of Time?</label>
+          <input id="question-4" type="text" name="question-4" placeholder="Answer here" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Question 5</legend>
+        <div class="question">
+          <label for="question-5">At what temperature are Celsius and Fahrenheit equal?</label>
+          <input id="question-5" type="text" name="question-5" placeholder="Answer here" />
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="column">
+      <fieldset>
+        <legend>Question 6</legend>
+        <div class="question">
+          <label for="question-6">What modern-day country was Marie Curie born in?</label>
+          <input id="question-6" type="text" name="question-6" placeholder="Answer here" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Question 7</legend>
+        <div class="question">
+          <label for="question-7">What is the biggest planet in our solar system?</label>
+          <input id="question-7" type="text" name="question-7" placeholder="Answer here" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Question 8</legend>
+        <div class="question">
+          <label for="question-8">What name is given for the number of protons found in the nucleus of an atom?</label>
+          <input id="question-8" type="text" name="question-8" placeholder="Answer here" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Question 9</legend>
+        <div class="question">
+          <label for="question-9">How many vertebrae does the average human possess?</label>
+          <input id="question-9" type="text" name="question-9" placeholder="Answer here" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Question 10</legend>
+        <div class="question">
+          <label for="question-10">What was the name of the first man-made satellite launched by the Soviet Union in 1957?</label>
+          <input id="question-10" type="text" name="question-10" placeholder="Answer here" />
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="column">
+      <fieldset>
+        <legend>Question 11</legend>
+        <div class="question">
+          <label for="question-11">Which oath of ethics taken by doctors is named after an Ancient Greek physician?</label>
+          <input id="question-11" type="text" name="question-11" placeholder="Answer here" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Question 12</legend>
+        <div class="question">
+          <label for="question-12">What is a material that will not carry an electrical charge called?</label>
+          <input id="question-12" type="text" name="question-12" placeholder="Answer here" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Question 13</legend>
+        <div class="question">
+          <label for="question-13">Which Apollo moon mission was the first to carry a lunar rover?</label>
+          <input id="question-13" type="text" name="question-13" placeholder="Answer here" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Question 14</legend>
+        <div class="question">
+          <label for="question-14">How many teeth does an adult human have?</label>
+          <input id="question-14" type="text" name="question-14" placeholder="Answer here" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Question 15</legend>
+        <div class="question">
+          <label for="question-15">What is the study of mushrooms called?</label>
+          <input id="question-15" type="text" name="question-15" placeholder="Answer here" />
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="column">
+      <fieldset>
+        <legend>Question 16</legend>
+        <div class="question">
+          <label for="question-16">On the periodic table, what symbol stands for silver?</label>
+          <input id="question-16" type="text" name="question-16" placeholder="Answer here" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Question 17</legend>
+        <div class="question">
+          <label for="question-17">Which two planets lack moons?</label>
+          <input id="question-17" type="text" name="question-17" placeholder="Answer here" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Question 18</legend>
+        <div class="question">
+          <label for="question-18">How many hearts do octopuses have?</label>
+          <input id="question-18" type="text" name="question-18" placeholder="Answer here" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Question 19</legend>
+        <div class="question">
+          <label for="question-19">In electronics, what does DC stand for?</label>
+          <input id="question-19" type="text" name="question-19" placeholder="Answer here" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Question 20</legend>
+        <div class="question">
+          <label for="question-20">What was the name of the first supersonic passenger airliner?</label>
+          <input id="question-20" type="text" name="question-20" placeholder="Answer here" />
+        </div>
+      </fieldset>
+    </div>
+  </div>
+</body>
+</html>
