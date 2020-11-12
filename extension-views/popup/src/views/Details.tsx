@@ -244,20 +244,35 @@ const View: React.FunctionComponent<Props> = ({
 
       <Content>
         <ObjectRendererContainer color={didJustSave ? "#009933" : "#333333"}>
-          {typeof clipboard === "object" && Array.isArray(clipboard) && (
-            <>
-              {"["}
-              <ArrayRenderer array={clipboard} searchVal={searchVal} />
-              {"]"}
-            </>
-          )}
-          {typeof clipboard === "object" && clipboard !== null && (
-            <>
-              {"{"}
-              <ObjectRenderer obj={clipboard} searchVal={searchVal} />
-              {"}"}
-            </>
-          )}
+          {(() => {
+            switch (typeof clipboard) {
+              case "object":
+                if (clipboard === null) {
+                  return null
+                }
+
+                if (Array.isArray(clipboard)) {
+                  return (
+                    <>
+                      {"["}
+                      <ArrayRenderer array={clipboard} searchVal={searchVal} />
+                      {"]"}
+                    </>
+                  )
+                }
+
+                return (
+                  <>
+                    {"{"}
+                    <ObjectRenderer obj={clipboard} searchVal={searchVal} />
+                    {"}"}
+                  </>
+                )
+
+              default:
+                return null
+            }
+          })()}
         </ObjectRendererContainer>
       </Content>
     </Main>

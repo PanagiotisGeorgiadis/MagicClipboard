@@ -75,21 +75,12 @@ const View: React.FunctionComponent<Props> = ({
   onSave,
 }) => {
   const [value, setValue] = React.useState<string>(
-    clipboard ? JSON.stringify(clipboard) : ""
+    clipboard ? JSON.stringify(clipboard, null, 2) : ""
   )
   const [message, setMessage] = React.useState<Message>({
     kind: "Hint",
     msg: hintMsg,
   })
-
-  const formattedValue = (() => {
-    try {
-      const obj = JSON.parse(value)
-      return JSON.stringify(obj, null, 2)
-    } catch (err) {
-      return value
-    }
-  })()
 
   return (
     <Main>
@@ -117,8 +108,12 @@ const View: React.FunctionComponent<Props> = ({
                 try {
                   // Trying to parse it here in order to verify its validity
                   const json = JSON.parse(value)
-                  onSave(json)
-                  setMessage({ kind: "Success", msg: saveSuccessMsg })
+                  if (json && typeof json === "object") {
+                    onSave(json)
+                    setMessage({ kind: "Success", msg: saveSuccessMsg })
+                  } else {
+                    setMessage({ kind: "Error", msg: errorMsg })
+                  }
                 } catch (err) {
                   setMessage({ kind: "Error", msg: errorMsg })
                 }
@@ -133,7 +128,7 @@ const View: React.FunctionComponent<Props> = ({
       <TextareaContainer>
         <Textarea
           rows={10}
-          value={formattedValue}
+          value={value}
           onChange={evt => {
             setValue(evt.target.value)
           }}
