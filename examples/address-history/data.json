@@ -1,0 +1,30 @@
+{
+  "Personal Details": {
+    "Address History": [
+      {
+        "Address Line 1": "Apartment 79, The Quarter",
+        "Address Line 2": "Egerton Street",
+        "Postcode": "CH1 3NP",
+        "City": "Chester",
+        "County": "Cheshire",
+        "Country": "England"
+      },
+      {
+        "Address Line 1": "Rose Cottage",
+        "Address Line 2": "Penpethy Farm",
+        "Postcode": "PL34 0HH",
+        "City": "Tintagel",
+        "County": "Cornwall",
+        "Country": "United Kingdom"
+      },
+      {
+        "Address Line 1": "Flat 102, Vale Royal House",
+        "Address Line 2": "36 Newport Court",
+        "Postcode": "WC2H 7QA",
+        "City": "London",
+        "County": "Greater London",
+        "Country": "United Kingdom"
+      }
+    ]
+  }
+}
