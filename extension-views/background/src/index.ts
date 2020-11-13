@@ -30,20 +30,11 @@ const generateContextMenus = (rootId: string, obj: Record<string, any>) => {
       case "bigint":
       case "number":
       case "string":
+      case "boolean":
         // Normal key
         chrome.contextMenus.create({
           id: newKey,
           title: key,
-          contexts: ["editable"],
-          parentId: rootId,
-        })
-        break
-
-      case "boolean":
-        // Checkbox Key
-        chrome.contextMenus.create({
-          id: newKey,
-          title: `${key} - ${val}`,
           contexts: ["editable"],
           parentId: rootId,
         })

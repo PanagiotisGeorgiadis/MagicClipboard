@@ -22,8 +22,9 @@ const TextareaContainer = styled.section`
 
 const Textarea = styled.textarea`
   width: 100%;
+  max-width: 480px;
+  max-height: 495px;
   margin-bottom: 4px;
-  resize: none;
   box-sizing: border-box;
 `
 

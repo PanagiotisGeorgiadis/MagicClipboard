@@ -1,10 +1,4 @@
-console.log("Hello from content scripts of Magic Clipboard!")
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log("Message listened on the contentScript")
-  console.log(request)
-  console.log(sender)
-
+chrome.runtime.onMessage.addListener(request => {
   // InsertValue is used to paste a value to the active element.
   if (request.kind === "InsertValue") {
     const element = document.activeElement as HTMLInputElement
