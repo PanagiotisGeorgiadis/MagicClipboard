@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Magic Clipboard",
-  "description": "A clipboard that works like magic.",
+  "description": "Create your own custom clipboard with ease",
   "version": "1.0.0",
   "icons": {
     "16": "icons/16.png",
