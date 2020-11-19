@@ -25,6 +25,7 @@ const Textarea = styled.textarea`
   max-width: 480px;
   max-height: 495px;
   margin-bottom: 4px;
+  resize: vertical;
   box-sizing: border-box;
 `
 
