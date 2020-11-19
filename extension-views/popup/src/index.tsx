@@ -21,6 +21,7 @@ interface Details {
 interface Edit {
   kind: "Edit"
   clipboard?: JSON
+  errorMessage?: string
 }
 
 type ViewType = Details | Edit
@@ -35,7 +36,11 @@ const View: React.FunctionComponent = () => {
           const data = JSON.parse(clipboard)
           setView({ kind: "Details", clipboard: data })
         } catch (err) {
-          // TODO: Show error message here and possibly clear the storage
+          setView({
+            kind: "Edit",
+            errorMessage:
+              "Error while parsing the stored magic clipboard value. Please enter a valid JSON to continue",
+          })
         }
       } else {
         setView({ kind: "Edit" })
@@ -59,6 +64,7 @@ const View: React.FunctionComponent = () => {
       return (
         <EditView
           clipboard={view.clipboard}
+          errorMessage={view.errorMessage}
           onClear={() => {
             chrome.storage.local.remove("clipboard")
             updateContextMenu()

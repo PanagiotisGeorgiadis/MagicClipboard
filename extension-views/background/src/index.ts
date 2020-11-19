@@ -76,7 +76,10 @@ const init = () => {
         const obj = JSON.parse(clipboard)
         generateContextMenus(rootContextMenuId, obj)
       } catch (err) {
-        // TODO: Add some proper error handling here
+        console.error(
+          "Error while parsing clipboard from storage on init function"
+        )
+        console.error(err)
       }
     }
   })
@@ -110,7 +113,10 @@ chrome.contextMenus.onClicked.addListener(itemData => {
             value,
           })
         } catch (err) {
-          // TODO: Add some proper error handling here
+          console.error(
+            "Error while parsing clipboard from storage on the contextMenus listener"
+          )
+          console.error(err)
         }
       }
     })

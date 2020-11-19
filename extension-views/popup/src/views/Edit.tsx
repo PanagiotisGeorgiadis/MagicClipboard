@@ -66,22 +66,31 @@ interface Message {
 
 interface Props {
   clipboard?: JSON
+  errorMessage?: string
   onClear: () => void
   onSave: (json: JSON) => void
 }
 
 const View: React.FunctionComponent<Props> = ({
   clipboard,
+  errorMessage,
   onClear,
   onSave,
 }) => {
   const [value, setValue] = React.useState<string>(
     clipboard ? JSON.stringify(clipboard, null, 2) : ""
   )
-  const [message, setMessage] = React.useState<Message>({
-    kind: "Hint",
-    msg: hintMsg,
-  })
+  const [message, setMessage] = React.useState<Message>(
+    errorMessage
+      ? {
+          kind: "Error",
+          msg: errorMessage,
+        }
+      : {
+          kind: "Hint",
+          msg: hintMsg,
+        }
+  )
 
   return (
     <Main>
