@@ -19,6 +19,11 @@ In order to see what `Magic Clipboard` can do follow the installation steps belo
 - Run `setup.sh`
 - [Load the unpacked extension](https://developer.chrome.com/extensions/getstarted) ( located inside `./chrome-extension` )
 
+**OR**
+
+- [Install the extension](https://chrome.google.com/webstore/detail/magic-clipboard/hpcejjdpbbkhhomlngbiloifbkdaagpg/related?hl=en) from the chrome webstore
+- Enable any extra permission you'd like to provide the extension with, such as `Allow in incognito` or `Allow access to file URLs`
+
 After you've loaded the extension have a look into the examples folder which contains example forms and data that you can load into the `Magic Clipboard` and fill out the forms.
 
 ### Development
