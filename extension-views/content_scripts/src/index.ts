@@ -25,6 +25,11 @@ chrome.runtime.onMessage.addListener(request => {
     const activeElement = getActiveElement()
     if (activeElement && activeElement.value !== undefined) {
       activeElement.value = request.value
+      // Firing these events here just in case there are SPAs that depend on event listeners instead of reading the values of the inputs.
+      const options = { bubbles: true, cancelable: true }
+      activeElement.dispatchEvent(new KeyboardEvent("change", options))
+      activeElement.dispatchEvent(new KeyboardEvent("keydown", options))
+      activeElement.dispatchEvent(new KeyboardEvent("keyup", options))
     } else {
       console.error(
         "Magic Clipboard failed to detect the active element on the current window."
